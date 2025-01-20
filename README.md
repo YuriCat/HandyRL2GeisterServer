@@ -3,7 +3,7 @@
 ## Usage
 
 ```
-python3 geister.py PORT (HOST)
+python3 geister.py PORT (HOST) (NUM_GAMES)
 ```
 
 ## Battle with Your Model

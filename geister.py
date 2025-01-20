@@ -662,7 +662,7 @@ class GatAgent:
     @staticmethod
     def gat2hrl_set(env, s_action):
         ps = s_action[4:]
-        seq = tuple('ABCDEFGH'.index(pchar) for pchar in ps)
+        seq = tuple(i for i, pchar in enumerate('ABCDEFGH') if pchar not in ps)
         return 144 + env.OSEQ.index(seq)
 
     @staticmethod
@@ -775,12 +775,12 @@ def recv(sock):
     return s
 
 
-def gat_loop(agent, port, host):
+def gat_loop(agent, port, host, n):
     env = Environment()
     player_mine = 0 if port == 10000 else 1
     result = [0, 0, 0]
 
-    while True:
+    for _ in range(n):
         import socket
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect((host, port))
@@ -855,8 +855,9 @@ if __name__ == '__main__':
     import sys
     port = int(sys.argv[1])
     host = sys.argv[2] if len(sys.argv) >= 3 else 'localhost'
+    n = int(sys.argv[3]) if len(sys.argv) >= 4 else 100
 
     #agent = RandomAgent()
     models = [OnnxModel('dummy.onnx')]
     agent = Agent(models, temperature=1.0, observation=False, symmetry=True)
-    gat_loop(agent, port, host)
+    gat_loop(agent, port, host, n)
